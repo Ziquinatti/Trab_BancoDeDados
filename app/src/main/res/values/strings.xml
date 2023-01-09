@@ -3,4 +3,10 @@
     <string name="entrar">Entrar</string>
     <string name="text_cadastro">Crie uma conta clicando aqui</string>
     <string name="title_cadastro">Cadastre-se</string>
+
+    <string name="con_disable">Não há conexão ativa!</string>
+    <string name="cad_ok">Cadastro realizado com sucesso!</string>
+    <string name="cad_error">Ocorreu um erro no cadastro!</string>
+    <string name="empty_field">Campo obrigatório!</string>
+    <string name="pass_not_match">Senhas não conferem!</string>
 </resources>

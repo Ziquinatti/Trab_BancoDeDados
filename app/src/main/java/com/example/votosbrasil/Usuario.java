@@ -4,5 +4,5 @@ public class Usuario {
     public String nome;
     public String email;
     public String senha;
-    public String confirmarSenha;
+    public String confSenha;
 }
