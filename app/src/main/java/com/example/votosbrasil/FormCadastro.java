@@ -64,10 +64,13 @@ public class FormCadastro extends AppCompatActivity {
                                     snackbar.setTextColor(Color.BLACK);
                                     snackbar.show();
 
+                                    user.id = result.get("ID").getAsInt();
+
                                     mHandler.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
                                             Intent intent = new Intent(FormCadastro.this, MainActivity.class);
+                                            intent.putExtra("user", user);
                                             startActivity(intent);
                                         }
                                     }, 4000);
@@ -103,31 +106,31 @@ public class FormCadastro extends AppCompatActivity {
 
         boolean ok = true;
 
-        if(user.confSenha.isEmpty()){
-            edit_confSenha.setError(getString(R.string.empty_field));
-            //edit_confSenha.requestFocus();
-            ok = false;
-        }
-        if(user.senha.isEmpty()){
-            edit_senha.setError(getString(R.string.empty_field));
-            //edit_senha.requestFocus();
-            ok = false;
-        }
-        if(user.email.isEmpty()){
-            edit_email.setError(getString(R.string.empty_field));
-            //edit_email.requestFocus();
-            ok = false;
-        }
-        if(user.nome.isEmpty()){
-            edit_nome.setError(getString(R.string.empty_field));
-            //edit_nome.requestFocus();
-            ok = false;
-        }
-
         if(!user.senha.equals(user.confSenha)){
             edit_senha.setError(getString(R.string.pass_not_match));
             edit_confSenha.setError(getString(R.string.pass_not_match));
             edit_senha.requestFocus();
+            ok = false;
+        }
+
+        if(user.confSenha.isEmpty()){
+            edit_confSenha.setError(getString(R.string.empty_field));
+            edit_confSenha.requestFocus();
+            ok = false;
+        }
+        if(user.senha.isEmpty()){
+            edit_senha.setError(getString(R.string.empty_field));
+            edit_senha.requestFocus();
+            ok = false;
+        }
+        if(user.email.isEmpty()){
+            edit_email.setError(getString(R.string.empty_field));
+            edit_email.requestFocus();
+            ok = false;
+        }
+        if(user.nome.isEmpty()){
+            edit_nome.setError(getString(R.string.empty_field));
+            edit_nome.requestFocus();
             ok = false;
         }
 

@@ -9,4 +9,6 @@
     <string name="cad_error">Ocorreu um erro no cadastro!</string>
     <string name="empty_field">Campo obrigatório!</string>
     <string name="pass_not_match">Senhas não conferem!</string>
+
+    <string name="user_not_find">Usuário não encontrado!</string>
 </resources>
