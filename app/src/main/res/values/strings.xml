@@ -11,4 +11,11 @@
     <string name="pass_not_match">Senhas não conferem!</string>
 
     <string name="user_not_find">Usuário não encontrado!</string>
+
+    <string name="menu_ini">Início</string>
+    <string name="menu_graf">Gráficos</string>
+    <string name="menu_add_voto">Adicionar Votos</string>
+
+    <string name="menu_exit">Sair</string>
+    <string name="exit">Desconectar do aplicativo</string>
 </resources>
