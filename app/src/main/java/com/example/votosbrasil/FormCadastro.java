@@ -1,21 +1,26 @@
 package com.example.votosbrasil;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
-import android.os.Handler;
-import android.widget.EditText;
-import android.widget.Button;
-import android.graphics.Color;
-import android.os.Bundle;
-import android.view.View;
-
-import com.google.android.material.snackbar.Snackbar;
-
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.blankj.utilcode.util.NetworkUtils;
-import com.google.gson.JsonObject;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class FormCadastro extends AppCompatActivity {
 
@@ -25,14 +30,15 @@ public class FormCadastro extends AppCompatActivity {
 
     private Usuario user;
 
-    private String HOST = "http://172.17.10.193/trab_final";
+    //private String HOST = "http://172.17.10.193/trab_final";
+    private String HOST = "http://192.168.42.161/trab_final";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_cadastro);
 
-        getSupportActionBar().hide();
+        //getSupportActionBar().hide();
         IniciarComponentes();
 
         bt_cadastrar.setOnClickListener(new View.OnClickListener(){
@@ -46,48 +52,45 @@ public class FormCadastro extends AppCompatActivity {
     private void CadastrarUsuario(View v){
         if(NetworkUtils.isConnected()){
             if(validarCampos()){
-                //Cadastrar novo usuário
                 String url = HOST + "/cadastro.php";
-
-                Ion.with(FormCadastro.this)
-                        .load(url)
-                        .setBodyParameter("nome", user.nome)
-                        .setBodyParameter("email", user.email)
-                        .setBodyParameter("senha", user.senha)
-                        .asJsonObject()
-                        .setCallback(new FutureCallback<JsonObject>() {
-                            @Override
-                            public void onCompleted(Exception e, JsonObject result) {
-                                if(result.get("CADASTRO").getAsString().equals("OK")){
-                                    Snackbar snackbar = Snackbar.make(v, R.string.cad_ok, Snackbar.LENGTH_SHORT);
-                                    snackbar.setBackgroundTint(Color.WHITE);
-                                    snackbar.setTextColor(Color.BLACK);
-                                    snackbar.show();
-
-                                    user.id = result.get("ID").getAsInt();
-
-                                    mHandler.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            Intent intent = new Intent(FormCadastro.this, MainActivity.class);
-                                            intent.putExtra("user", user);
-                                            startActivity(intent);
-                                        }
-                                    }, 4000);
-                                } else {
-                                    Snackbar snackbar = Snackbar.make(v, R.string.cad_error, Snackbar.LENGTH_SHORT);
-                                    snackbar.setBackgroundTint(Color.WHITE);
-                                    snackbar.setTextColor(Color.BLACK);
-                                    snackbar.show();
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        if (response.equals("sucesso")) {
+                            Toast.makeText(FormCadastro.this, R.string.cad_ok, Toast.LENGTH_SHORT).show();
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Intent intent = new Intent(FormCadastro.this, MainActivity.class);
+                                    intent.putExtra("user", user);
+                                    startActivity(intent);
+                                    finish();
                                 }
-                            }
-                        });
+                            }, 3000);
+                        } else if (response.equals("erro")) {
+                            Toast.makeText(FormCadastro.this, R.string.cad_error, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(FormCadastro.this, error.toString().trim(), Toast.LENGTH_SHORT).show();
+                    }
+                }){
+                    @Override
+                    protected Map<String, String> getParams() throws AuthFailureError {
+                        Map<String, String> data = new HashMap<>();
+                        data.put("nome", user.nome);
+                        data.put("email", user.email);
+                        data.put("senha", user.senha);
+                        return data;
+                    }
+                };
+                RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+                requestQueue.add(stringRequest);
             }
         } else {
-            Snackbar snackbar = Snackbar.make(v, R.string.con_disable, Snackbar.LENGTH_SHORT);
-            snackbar.setBackgroundTint(Color.WHITE);
-            snackbar.setTextColor(Color.BLACK);
-            snackbar.show();
+            Toast.makeText(FormCadastro.this, R.string.con_disable, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -99,10 +102,10 @@ public class FormCadastro extends AppCompatActivity {
 
         user = new Usuario();
 
-        user.nome = edit_nome.getText().toString();
-        user.email = edit_email.getText().toString();
-        user.senha = edit_senha.getText().toString();
-        user.confSenha = edit_confSenha.getText().toString();
+        user.nome = edit_nome.getText().toString().trim();
+        user.email = edit_email.getText().toString().trim();
+        user.senha = edit_senha.getText().toString().trim();
+        user.confSenha = edit_confSenha.getText().toString().trim();
 
         boolean ok = true;
 

@@ -9,14 +9,25 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.blankj.utilcode.util.NetworkUtils;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class FormLogin extends AppCompatActivity {
 
@@ -28,20 +39,21 @@ public class FormLogin extends AppCompatActivity {
 
     private Usuario user;
 
-    private String HOST = "http://172.17.10.193/trab_final";
+    //private String HOST = "http://172.17.10.193/trab_final";
+    private String HOST = "http://192.168.42.161/trab_final";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_login);
 
-        getSupportActionBar().hide();
+        //getSupportActionBar().hide();
         IniciarComponentes();
 
         text_tela_cadastro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(FormLogin.this,FormCadastro.class);
+                Intent intent = new Intent(FormLogin.this, FormCadastro.class);
                 startActivity(intent);
             }
         });
@@ -57,48 +69,46 @@ public class FormLogin extends AppCompatActivity {
     private void Entrar(View v){
         if(NetworkUtils.isConnected()){
             if(validarCampos()){
-                //Entrar
+                pb_entrando.setVisibility(View.VISIBLE);
                 String url = HOST + "/login.php";
-
-                Ion.with(FormLogin.this)
-                        .load(url)
-                        .setBodyParameter("email", user.email)
-                        .setBodyParameter("senha", user.senha)
-                        .asJsonObject()
-                        .setCallback(new FutureCallback<JsonObject>() {
-                            @Override
-                            public void onCompleted(Exception e, JsonObject result) {
-                                if(result.get("LOGIN").getAsString().equals("OK")){
-                                    pb_entrando.setVisibility(View.VISIBLE);
-                                    user.id = result.get("ID").getAsInt();
-                                    user.nome = result.get("NOME").getAsString();
-
-                                    mHandler.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            pb_entrando.setVisibility(View.INVISIBLE);
-                                            edit_email.setText(null);
-                                            edit_senha.setText(null);
-
-                                            Intent intent = new Intent(FormLogin.this, MainActivity.class);
-                                            intent.putExtra("user", user);
-                                            startActivity(intent);
-                                        }
-                                    }, 4000);
-                                } else {
-                                    Snackbar snackbar = Snackbar.make(v, R.string.user_not_find, Snackbar.LENGTH_SHORT);
-                                    snackbar.setBackgroundTint(Color.WHITE);
-                                    snackbar.setTextColor(Color.BLACK);
-                                    snackbar.show();
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        if (response.equals("sucesso")) {
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Intent intent = new Intent(FormLogin.this, MainActivity.class);
+                                    intent.putExtra("user", user);
+                                    startActivity(intent);
+                                    finish();
                                 }
-                            }
-                        });
+                            }, 3000);
+                        } else if (response.equals("erro")) {
+                            Toast.makeText(FormLogin.this, R.string.user_not_find, Toast.LENGTH_SHORT).show();
+                            pb_entrando.setVisibility(View.INVISIBLE);
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        pb_entrando.setVisibility(View.INVISIBLE);
+                        Toast.makeText(FormLogin.this, error.toString().trim(), Toast.LENGTH_SHORT).show();
+                    }
+                }){
+                    @Override
+                    protected Map<String, String> getParams() throws AuthFailureError {
+                        Map<String, String> data = new HashMap<>();
+                        data.put("email", user.email);
+                        data.put("senha", user.senha);
+                        return data;
+                    }
+                };
+                RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+                requestQueue.add(stringRequest);
             }
         } else {
-            Snackbar snackbar = Snackbar.make(v, R.string.con_disable, Snackbar.LENGTH_SHORT);
-            snackbar.setBackgroundTint(Color.WHITE);
-            snackbar.setTextColor(Color.BLACK);
-            snackbar.show();
+            Toast.makeText(FormLogin.this, R.string.con_disable, Toast.LENGTH_LONG).show();
         }
     }
 
