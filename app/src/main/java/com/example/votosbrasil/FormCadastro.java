@@ -15,9 +15,13 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.blankj.utilcode.util.NetworkUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +35,7 @@ public class FormCadastro extends AppCompatActivity {
     private Usuario user;
 
     //private String HOST = "http://172.17.10.193/trab_final";
-    private String HOST = "http://192.168.42.161/trab_final";
+    private String HOST = "http://192.168.42.23/trab_final";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,22 +57,39 @@ public class FormCadastro extends AppCompatActivity {
         if(NetworkUtils.isConnected()){
             if(validarCampos()){
                 String url = HOST + "/cadastro.php";
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+
+                JSONObject data = new JSONObject();
+                try {
+                    data.put("nome", user.nome);
+                    data.put("email", user.email);
+                    data.put("senha", user.senha);
+                } catch (JSONException e){
+                    e.printStackTrace();
+                }
+
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(String response) {
-                        if (response.equals("sucesso")) {
-                            Toast.makeText(FormCadastro.this, R.string.cad_ok, Toast.LENGTH_SHORT).show();
-                            mHandler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Intent intent = new Intent(FormCadastro.this, MainActivity.class);
-                                    intent.putExtra("user", user);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                            }, 3000);
-                        } else if (response.equals("erro")) {
-                            Toast.makeText(FormCadastro.this, R.string.cad_error, Toast.LENGTH_SHORT).show();
+                    public void onResponse(JSONObject response) {
+                        System.out.println(response.getClass().getSimpleName());
+                        try {
+                            if(response.getString("CADASTRO").equals("OK")){
+                                user.id = response.getInt("ID");
+
+                                Toast.makeText(FormCadastro.this, R.string.cad_ok, Toast.LENGTH_SHORT).show();
+                                mHandler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Intent intent = new Intent(FormCadastro.this, MainActivity.class);
+                                        intent.putExtra("user", user);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                }, 3000);
+                            } else {
+                                Toast.makeText(FormCadastro.this, R.string.cad_error, Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -76,18 +97,9 @@ public class FormCadastro extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(FormCadastro.this, error.toString().trim(), Toast.LENGTH_SHORT).show();
                     }
-                }){
-                    @Override
-                    protected Map<String, String> getParams() throws AuthFailureError {
-                        Map<String, String> data = new HashMap<>();
-                        data.put("nome", user.nome);
-                        data.put("email", user.email);
-                        data.put("senha", user.senha);
-                        return data;
-                    }
-                };
+                });
                 RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-                requestQueue.add(stringRequest);
+                requestQueue.add(jsonObjectRequest);
             }
         } else {
             Toast.makeText(FormCadastro.this, R.string.con_disable, Toast.LENGTH_LONG).show();

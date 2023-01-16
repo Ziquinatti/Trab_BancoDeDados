@@ -18,6 +18,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.blankj.utilcode.util.NetworkUtils;
@@ -25,6 +26,9 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +44,7 @@ public class FormLogin extends AppCompatActivity {
     private Usuario user;
 
     //private String HOST = "http://172.17.10.193/trab_final";
-    private String HOST = "http://192.168.42.161/trab_final";
+    private String HOST = "http://192.168.42.23/trab_final";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,22 +75,38 @@ public class FormLogin extends AppCompatActivity {
             if(validarCampos()){
                 pb_entrando.setVisibility(View.VISIBLE);
                 String url = HOST + "/login.php";
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+
+                JSONObject data = new JSONObject();
+                try {
+                    data.put("email", user.email);
+                    data.put("senha", user.senha);
+                } catch (JSONException e){
+                    e.printStackTrace();
+                }
+
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(String response) {
-                        if (response.equals("sucesso")) {
-                            mHandler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Intent intent = new Intent(FormLogin.this, MainActivity.class);
-                                    intent.putExtra("user", user);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                            }, 3000);
-                        } else if (response.equals("erro")) {
-                            Toast.makeText(FormLogin.this, R.string.user_not_find, Toast.LENGTH_SHORT).show();
-                            pb_entrando.setVisibility(View.INVISIBLE);
+                    public void onResponse(JSONObject response) {
+                        try {
+                            if(response.getString("LOGIN").equals("OK")){
+                                user.id = response.getInt("ID");
+                                user.nome = response.getString("NOME");
+
+                                mHandler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Intent intent = new Intent(FormLogin.this, MainActivity.class);
+                                        intent.putExtra("user", user);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                }, 3000);
+                            } else {
+                                Toast.makeText(FormLogin.this, R.string.user_not_find, Toast.LENGTH_SHORT).show();
+                                pb_entrando.setVisibility(View.INVISIBLE);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -95,17 +115,9 @@ public class FormLogin extends AppCompatActivity {
                         pb_entrando.setVisibility(View.INVISIBLE);
                         Toast.makeText(FormLogin.this, error.toString().trim(), Toast.LENGTH_SHORT).show();
                     }
-                }){
-                    @Override
-                    protected Map<String, String> getParams() throws AuthFailureError {
-                        Map<String, String> data = new HashMap<>();
-                        data.put("email", user.email);
-                        data.put("senha", user.senha);
-                        return data;
-                    }
-                };
+                });
                 RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-                requestQueue.add(stringRequest);
+                requestQueue.add(jsonObjectRequest);
             }
         } else {
             Toast.makeText(FormLogin.this, R.string.con_disable, Toast.LENGTH_LONG).show();
