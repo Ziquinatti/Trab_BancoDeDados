@@ -1,18 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/gradient_background"
-    tools:context=".AddVotosFragment">
+    android:layout_height="wrap_content">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        android:text="@string/menu_add_voto" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/light_gray"
+        tools:context=".AddVotosFragment">
 
-</FrameLayout>
+        <View
+            android:id="@+id/containerTop"
+            style="@style/TopContainerComponents"
+            android:layout_height="50dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/title_add_votos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Adicionar Votos"
+            android:textColor="@color/black"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            app:layout_constraintStart_toStartOf="@id/containerTop"
+            app:layout_constraintTop_toTopOf="@id/containerTop"
+            app:layout_constraintEnd_toEndOf="@id/containerTop"
+            />
+
+        <View
+            android:id="@+id/containerForm"
+            style="@style/ContainerComponents"
+            android:layout_height="500dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/containerTop" />
+
+        <Spinner
+            android:id="@+id/sp_estado"
+            style="@style/Spinner"
+            android:hint="Estado"
+            android:spinnerMode="dropdown"
+            app:layout_constraintEnd_toEndOf="@id/containerForm"
+            app:layout_constraintStart_toStartOf="@id/containerForm"
+            app:layout_constraintTop_toTopOf="@id/containerForm"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"/>
+
+        <EditText
+            android:id="@+id/sp_cidade"
+            style="@style/Edit_Text"
+            android:hint="Município"
+            app:layout_constraintEnd_toEndOf="@id/containerForm"
+            app:layout_constraintStart_toStartOf="@id/containerForm"
+            app:layout_constraintTop_toBottomOf="@id/sp_estado" />
+
+        <EditText
+            android:id="@+id/edit_zona"
+            style="@style/Edit_Text"
+            android:hint="Zona"
+            app:layout_constraintEnd_toEndOf="@id/containerForm"
+            app:layout_constraintStart_toStartOf="@id/containerForm"
+            app:layout_constraintTop_toBottomOf="@id/sp_cidade" />
+
+        <EditText
+            android:id="@+id/edit_secao"
+            style="@style/Edit_Text"
+            android:hint="Seção"
+            app:layout_constraintEnd_toEndOf="@id/containerForm"
+            app:layout_constraintStart_toStartOf="@id/containerForm"
+            app:layout_constraintTop_toBottomOf="@id/edit_zona" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

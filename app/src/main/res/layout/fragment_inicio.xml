@@ -1,36 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/light_gray"
-    tools:context=".InicioFragment">
+    android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/hello_user"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:text="Olá, <user_name>"
-        android:textColor="@color/black"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent"
+        android:background="@color/light_gray"
+        tools:context=".InicioFragment">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        android:text="@string/menu_ini"
-        android:layout_marginTop="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/hello_user"
-        />
+        <View
+            android:id="@+id/containerTop"
+            style="@style/ContainerComponents"
+            android:layout_height="140dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/hello_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="15dp"
+            android:text="Olá, user_name"
+            android:textColor="@color/black"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@id/containerTop"
+            app:layout_constraintTop_toTopOf="@id/containerTop" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/bt_add_votos"
+            style="@style/Button2"
+            android:text="Add Votos"
+            app:layout_constraintEnd_toStartOf="@id/bt_graficos"
+            app:layout_constraintStart_toStartOf="@id/containerTop"
+            app:layout_constraintTop_toBottomOf="@id/hello_user" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/bt_graficos"
+            style="@style/Button2"
+            android:text="Gráficos"
+            app:layout_constraintEnd_toEndOf="@id/containerTop"
+            app:layout_constraintStart_toEndOf="@id/bt_add_votos"
+            app:layout_constraintTop_toBottomOf="@id/hello_user" />
+
+        <View
+            android:id="@+id/containerGraph"
+            style="@style/ContainerComponents"
+            android:layout_height="300dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/containerTop" />
+
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/barchart1"
+            android:layout_width="match_parent"
+            android:layout_height="280dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toTopOf="@id/containerGraph"
+            app:layout_constraintStart_toStartOf="@id/containerGraph"
+            app:layout_constraintEnd_toEndOf="@id/containerGraph"
+            />
+
+        <View
+            android:id="@+id/containerGraph2"
+            style="@style/ContainerComponents"
+            android:layout_height="300dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/containerGraph" />
+
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/barchart2"
+            android:layout_width="match_parent"
+            android:layout_height="280dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toTopOf="@id/containerGraph2"
+            app:layout_constraintStart_toStartOf="@id/containerGraph2"
+            app:layout_constraintEnd_toEndOf="@id/containerGraph2"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/containerGraph2"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

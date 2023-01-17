@@ -23,9 +23,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        trocarFragment(new InicioFragment());
 
-       iniciarComponentes();
+        iniciarComponentes();
+        trocarFragment(new InicioFragment());
 
         binding.bottomNavigation.setOnItemSelectedListener(item -> {
             switch (item.getItemId()){
@@ -51,6 +51,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void trocarFragment(Fragment fragment){
+        Bundle data = new Bundle();
+        data.putInt("id", user.id);
+        data.putString("nome", user.nome);
+        fragment.setArguments(data);
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout, fragment);
@@ -61,10 +66,13 @@ public class MainActivity extends AppCompatActivity {
         app_bar = findViewById(R.id.main_app_bar);
         setSupportActionBar(app_bar);
 
-        user = (Usuario) getIntent().getSerializableExtra("user");
-        System.out.println("ID: " + user.id);
-        System.out.println("NOME: " + user.nome);
-        System.out.println("EMAIL: " + user.email);
-        System.out.println("SENHA: " + user.senha);
+        user = new Usuario();
+        //user = (Usuario) getIntent().getSerializableExtra("user");
+        user.id = 1;
+        user.nome = "TestBot";
+        //System.out.println("ID: " + user.id);
+        //System.out.println("NOME: " + user.nome);
+        //System.out.println("EMAIL: " + user.email);
+        //System.out.println("SENHA: " + user.senha);
     }
 }

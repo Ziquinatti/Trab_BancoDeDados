@@ -38,7 +38,7 @@ public class FormLogin extends AppCompatActivity {
     private EditText edit_email, edit_senha;
     private Button bt_entrar;
     private ProgressBar pb_entrando;
-    private TextView text_tela_cadastro;
+    private TextView text_tela_cadastro, text_skip_menu;
     private Handler mHandler = new Handler();
 
     private Usuario user;
@@ -59,6 +59,15 @@ public class FormLogin extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(FormLogin.this, FormCadastro.class);
                 startActivity(intent);
+            }
+        });
+
+        text_skip_menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(FormLogin.this, MainActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
 
@@ -155,5 +164,7 @@ public class FormLogin extends AppCompatActivity {
         bt_entrar = findViewById(R.id.bt_entrar);
         pb_entrando = findViewById(R.id.progressbar);
         text_tela_cadastro = findViewById(R.id.text_tela_cadastro);
+
+        text_skip_menu = findViewById(R.id.text_skip);
     }
 }
