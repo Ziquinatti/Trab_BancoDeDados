@@ -7,6 +7,13 @@
         <item name="android:layout_margin">20dp</item>
     </style>
 
+    <style name="ContainerComponents2">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1000dp</item>
+        <item name="android:background">@drawable/container_components</item>
+        <item name="android:layout_marginTop">20dp</item>
+    </style>
+
     <style name="TopContainerComponents">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">250dp</item>
@@ -16,7 +23,7 @@
     <style name="FragmentContainer">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">0dp</item>
-        <item name="android:background">@drawable/fragment_background</item>
+        <item name="android:background">@android:color/transparent</item>
         <item name="android:layout_marginLeft">10dp</item>
         <item name="android:layout_marginRight">10dp</item>
     </style>
@@ -32,14 +39,39 @@
         <item name="android:layout_marginTop">15dp</item>
     </style>
 
+    <style name="Edit_Text2">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/edit_text</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:maxLength">25</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginRight">10dp</item>
+        <item name="android:layout_marginTop">15dp</item>
+    </style>
+
+    <style name="Edit_Text_Left">
+        <item name="android:layout_width">250dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/edit_text_left</item>
+        <item name="android:maxLength">25</item>
+    </style>
+
+    <style name="Edit_Text_Right">
+        <item name="android:layout_width">142dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/edit_text_right</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:maxLength">25</item>
+    </style>
+
     <style name="Spinner">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@drawable/edit_text</item>
-        <item name="android:padding">20dp</item>
         <item name="android:maxLength">25</item>
-        <item name="android:layout_marginLeft">40dp</item>
-        <item name="android:layout_marginRight">40dp</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginRight">10dp</item>
         <item name="android:layout_marginTop">15dp</item>
     </style>
 

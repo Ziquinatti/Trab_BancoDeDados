@@ -8,7 +8,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/light_gray"
+        android:background="@android:color/transparent"
         tools:context=".AddVotosFragment">
 
         <View
@@ -36,34 +36,38 @@
 
         <View
             android:id="@+id/containerForm"
-            style="@style/ContainerComponents"
-            android:layout_height="500dp"
+            style="@style/ContainerComponents2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/containerTop" />
+            app:layout_constraintTop_toBottomOf="@id/containerTop"
+            />
+
+        <Spinner
+            android:id="@+id/sp_turno"
+            style="@style/Spinner"
+            app:layout_constraintEnd_toEndOf="@id/containerForm"
+            app:layout_constraintStart_toStartOf="@id/containerForm"
+            app:layout_constraintTop_toTopOf="@id/containerForm" />
 
         <Spinner
             android:id="@+id/sp_estado"
             style="@style/Spinner"
-            android:hint="Estado"
             android:spinnerMode="dropdown"
             app:layout_constraintEnd_toEndOf="@id/containerForm"
             app:layout_constraintStart_toStartOf="@id/containerForm"
-            app:layout_constraintTop_toTopOf="@id/containerForm"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"/>
+            app:layout_constraintTop_toBottomOf="@id/sp_turno"
+            />
 
-        <EditText
+        <Spinner
             android:id="@+id/sp_cidade"
-            style="@style/Edit_Text"
-            android:hint="Município"
+            style="@style/Spinner"
             app:layout_constraintEnd_toEndOf="@id/containerForm"
             app:layout_constraintStart_toStartOf="@id/containerForm"
             app:layout_constraintTop_toBottomOf="@id/sp_estado" />
 
         <EditText
             android:id="@+id/edit_zona"
-            style="@style/Edit_Text"
+            style="@style/Edit_Text2"
             android:hint="Zona"
             app:layout_constraintEnd_toEndOf="@id/containerForm"
             app:layout_constraintStart_toStartOf="@id/containerForm"
@@ -71,12 +75,70 @@
 
         <EditText
             android:id="@+id/edit_secao"
-            style="@style/Edit_Text"
+            style="@style/Edit_Text2"
             android:hint="Seção"
             app:layout_constraintEnd_toEndOf="@id/containerForm"
             app:layout_constraintStart_toStartOf="@id/containerForm"
             app:layout_constraintTop_toBottomOf="@id/edit_zona" />
 
+        <LinearLayout
+            android:id="@+id/containerCandidatos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            app:layout_constraintEnd_toEndOf="@id/containerForm"
+            app:layout_constraintStart_toStartOf="@id/containerForm"
+            app:layout_constraintTop_toBottomOf="@id/edit_secao">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Spinner
+                    style="@style/Edit_Text_Left"
+                    />
+
+                <EditText
+                    style="@style/Edit_Text_Right"
+                    android:hint="Votos"
+                    />
+            </LinearLayout>
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/bt_add_imagem"
+            style="@style/Button2"
+            android:layout_width="300dp"
+            android:text="Escolher Imagem"
+            app:layout_constraintEnd_toEndOf="@id/containerForm"
+            app:layout_constraintStart_toStartOf="@id/containerForm"
+            app:layout_constraintTop_toBottomOf="@id/containerCandidatos" />
+
+        <ImageView
+            android:id="@+id/img_galeria"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:scaleType="fitXY"
+            android:layout_marginTop="15dp"
+            app:layout_constraintStart_toStartOf="@id/containerForm"
+            app:layout_constraintEnd_toEndOf="@id/containerForm"
+            app:layout_constraintTop_toBottomOf="@id/bt_add_imagem"
+            android:background="@drawable/image_field"
+            />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/bt_salvar"
+            style="@style/Button2"
+            android:text="SALVAR"
+            android:layout_width="300dp"
+            android:layout_marginTop="50dp"
+            app:layout_constraintEnd_toEndOf="@id/containerForm"
+            app:layout_constraintStart_toStartOf="@id/containerForm"
+            app:layout_constraintTop_toBottomOf="@id/img_galeria" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
