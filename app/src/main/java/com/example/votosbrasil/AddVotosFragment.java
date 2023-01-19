@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -50,12 +51,14 @@ public class AddVotosFragment extends Fragment{
     private String mParam1;
     private String mParam2;
 
-    private List<String> turno, estados, cidades, candidatos;
-    private Spinner sp_turno, sp_estado, sp_cidade, sp_candidato;
-
+    private List<String> turno, estados, cidades;
+    private List<String> candidatos, mData;
+    private Spinner sp_turno, sp_estado, sp_cidade;
+    private ListView list_candidatos;
+    private ListviewAdapter adapter;
     private final int GALLERY_REQ_CODE = 1000;
     private ImageView img_galeria;
-    private Button bt_add_imagem;
+    private Button bt_add_imagem, bt_add_voto;
 
     private int id_turno, id_estado = 0, id_cidade;
 
@@ -119,12 +122,18 @@ public class AddVotosFragment extends Fragment{
         cidades.add("Selecione um estado");
         setDropDowns(sp_cidade, cidades);
 
+        //LISTA DE CANDIDADOS E VOTOS
+        mData = new ArrayList<String>();
+        mData.add("Candidato1");
+
         candidatos = new ArrayList<String>();
         candidatos.add("Bob");
         candidatos.add("Rose");
         candidatos.add("TestBot");
         candidatos.add("Jorge");
-        setDropDowns(sp_candidato, candidatos);
+
+        adapter = new ListviewAdapter((ArrayList<String>) mData, (ArrayList<String>)candidatos, getActivity());
+        list_candidatos.setAdapter(adapter);
 
         bt_add_imagem.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,6 +141,14 @@ public class AddVotosFragment extends Fragment{
                 Intent iGaleria = new Intent(Intent.ACTION_PICK);
                 iGaleria.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(iGaleria, GALLERY_REQ_CODE);
+            }
+        });
+
+        bt_add_voto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mData.add("Candidato2");
+                list_candidatos.setAdapter(adapter);
             }
         });
     }
@@ -261,7 +278,9 @@ public class AddVotosFragment extends Fragment{
         sp_estado = (Spinner) v.findViewById(R.id.sp_estado);
         sp_cidade = (Spinner) v.findViewById(R.id.sp_cidade);
 
-        sp_candidato = (Spinner) v.findViewById(R.id.sp_candidato);
+        //sp_candidato = (Spinner) v.findViewById(R.id.sp_candidato);
+        list_candidatos = (ListView) v.findViewById(R.id.list_candidato);
+        bt_add_voto = v.findViewById(R.id.bt_add_voto);
 
         img_galeria = v.findViewById(R.id.img_galeria);
         bt_add_imagem = v.findViewById(R.id.bt_add_imagem);

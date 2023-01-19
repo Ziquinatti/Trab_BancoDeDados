@@ -81,21 +81,25 @@
             app:layout_constraintStart_toStartOf="@id/containerForm"
             app:layout_constraintTop_toBottomOf="@id/edit_zona" />
 
-        <Spinner
-            android:id="@+id/sp_candidato"
-            style="@style/Edit_Text_Left"
-            android:padding="0dp"
-            app:layout_constraintStart_toStartOf="@id/containerForm"
-            app:layout_constraintTop_toBottomOf="@id/edit_secao"
-            />
-
-        <EditText
-            android:id="@+id/edit_votos"
-            style="@style/Edit_Text_Right"
-            android:hint="Nº Votos"
+        <ListView
+            android:id="@+id/list_candidato"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             app:layout_constraintEnd_toEndOf="@id/containerForm"
-            app:layout_constraintTop_toBottomOf="@id/edit_secao"
-            />
+            app:layout_constraintStart_toStartOf="@id/containerForm"
+            app:layout_constraintTop_toBottomOf="@id/edit_secao">
+        </ListView>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/bt_add_voto"
+            style="@style/Button2"
+            android:text="+ Votos"
+            android:layout_width="wrap_content"
+            android:padding="5dp"
+            app:layout_constraintEnd_toEndOf="@id/containerForm"
+            app:layout_constraintStart_toStartOf="@id/containerForm"
+            app:layout_constraintTop_toBottomOf="@id/list_candidato"/>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/bt_add_imagem"
@@ -104,7 +108,7 @@
             android:text="Escolher Imagem"
             app:layout_constraintEnd_toEndOf="@id/containerForm"
             app:layout_constraintStart_toStartOf="@id/containerForm"
-            app:layout_constraintTop_toBottomOf="@id/edit_votos" />
+            app:layout_constraintTop_toBottomOf="@id/bt_add_voto" />
 
         <ImageView
             android:id="@+id/img_galeria"
