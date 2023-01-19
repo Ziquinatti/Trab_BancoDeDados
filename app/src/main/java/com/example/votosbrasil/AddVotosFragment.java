@@ -50,8 +50,8 @@ public class AddVotosFragment extends Fragment{
     private String mParam1;
     private String mParam2;
 
-    private List<String> turno, estados, cidades;
-    private Spinner sp_turno, sp_estado, sp_cidade;
+    private List<String> turno, estados, cidades, candidatos;
+    private Spinner sp_turno, sp_estado, sp_cidade, sp_candidato;
 
     private final int GALLERY_REQ_CODE = 1000;
     private ImageView img_galeria;
@@ -59,7 +59,8 @@ public class AddVotosFragment extends Fragment{
 
     private int id_turno, id_estado = 0, id_cidade;
 
-    private String HOST = "http://192.168.42.54/trab_final";
+    //private String HOST = "http://192.168.42.54/trab_final";
+    private String HOST = "https://votosbrasil.000webhostapp.com/trab_final/";
 
     public AddVotosFragment() {
         // Required empty public constructor
@@ -117,6 +118,13 @@ public class AddVotosFragment extends Fragment{
         cidades = new ArrayList<String>();
         cidades.add("Selecione um estado");
         setDropDowns(sp_cidade, cidades);
+
+        candidatos = new ArrayList<String>();
+        candidatos.add("Bob");
+        candidatos.add("Rose");
+        candidatos.add("TestBot");
+        candidatos.add("Jorge");
+        setDropDowns(sp_candidato, candidatos);
 
         bt_add_imagem.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -252,6 +260,8 @@ public class AddVotosFragment extends Fragment{
         sp_turno = (Spinner) v.findViewById(R.id.sp_turno);
         sp_estado = (Spinner) v.findViewById(R.id.sp_estado);
         sp_cidade = (Spinner) v.findViewById(R.id.sp_cidade);
+
+        sp_candidato = (Spinner) v.findViewById(R.id.sp_candidato);
 
         img_galeria = v.findViewById(R.id.img_galeria);
         bt_add_imagem = v.findViewById(R.id.bt_add_imagem);

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="ContainerComponents">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">250dp</item>
@@ -51,23 +52,27 @@
     </style>
 
     <style name="Edit_Text_Left">
-        <item name="android:layout_width">250dp</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">270dp</item>
+        <item name="android:layout_height">47dp</item>
         <item name="android:background">@drawable/edit_text_left</item>
         <item name="android:maxLength">25</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginTop">15dp</item>
     </style>
 
     <style name="Edit_Text_Right">
-        <item name="android:layout_width">142dp</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">130dp</item>
+        <item name="android:layout_height">47dp</item>
         <item name="android:background">@drawable/edit_text_right</item>
         <item name="android:padding">12dp</item>
         <item name="android:maxLength">25</item>
+        <item name="android:layout_marginRight">10dp</item>
+        <item name="android:layout_marginTop">15dp</item>
     </style>
 
     <style name="Spinner">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_height">47dp</item>
         <item name="android:background">@drawable/edit_text</item>
         <item name="android:maxLength">25</item>
         <item name="android:layout_marginLeft">10dp</item>

@@ -44,7 +44,8 @@ public class FormLogin extends AppCompatActivity {
     private Usuario user;
 
     //private String HOST = "http://172.17.10.193/trab_final";
-    private String HOST = "http://192.168.42.23/trab_final";
+    //private String HOST = "http://192.168.42.23/trab_final";
+    private String HOST = "https://votosbrasil.000webhostapp.com/trab_final/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
