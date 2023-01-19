@@ -1,26 +1,37 @@
 package com.example.votosbrasil;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -28,15 +39,17 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.blankj.utilcode.util.NetworkUtils;
-import com.github.mikephil.charting.charts.BarChart;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -56,14 +69,22 @@ public class AddVotosFragment extends Fragment{
     private Spinner sp_turno, sp_estado, sp_cidade;
     private ListView list_candidatos;
     private ListviewAdapter adapter;
-    private final int GALLERY_REQ_CODE = 1000;
-    private ImageView img_galeria;
-    private Button bt_add_imagem, bt_add_voto;
+    //private final int GALLERY_REQ_CODE = 100;
+    //private Uri image;
+    private Button bt_add_imagem, bt_add_voto, bt_salvar;
+    private View background;
+    private EditText edit_zona, edit_secao;
 
-    private int id_turno, id_estado = 0, id_cidade;
+    //Dados
+    private int id_turno, id_estado = 0;
+    private String cidade;
+
+    //Imagem
+    private ImageView imageView;
+    private String img_tag;
 
     //private String HOST = "http://192.168.42.54/trab_final";
-    private String HOST = "https://votosbrasil.000webhostapp.com/trab_final/";
+    private String HOST = "https://votosbrasil.000webhostapp.com/trab_final";
 
     public AddVotosFragment() {
         // Required empty public constructor
@@ -102,6 +123,7 @@ public class AddVotosFragment extends Fragment{
         return inflater.inflate(R.layout.fragment_add_votos, container, false);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -135,12 +157,31 @@ public class AddVotosFragment extends Fragment{
         adapter = new ListviewAdapter((ArrayList<String>) mData, (ArrayList<String>)candidatos, getActivity());
         list_candidatos.setAdapter(adapter);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                    Uri.parse("package:" + getActivity().getPackageName()));
+            getActivity().finish();
+            startActivity(intent);
+            return;
+        }
+
         bt_add_imagem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent iGaleria = new Intent(Intent.ACTION_PICK);
+                Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(i, 100);
+                /*Intent iGaleria = new Intent(Intent.ACTION_PICK);
                 iGaleria.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(iGaleria, GALLERY_REQ_CODE);
+                startActivityForResult(iGaleria, GALLERY_REQ_CODE);*/
+            }
+        });
+
+        list_candidatos.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return (motionEvent.getAction() == MotionEvent.ACTION_MOVE);
             }
         });
 
@@ -148,20 +189,102 @@ public class AddVotosFragment extends Fragment{
             @Override
             public void onClick(View view) {
                 mData.add("Candidato2");
-                list_candidatos.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+
+                int totalHeight = 0;
+                for(int i=0; i<adapter.getCount(); i++){
+                    View listItem = adapter.getView(i, null, list_candidatos);
+                    listItem.measure(0,0);
+                    totalHeight += listItem.getMeasuredHeight();
+                }
+
+                ViewGroup.LayoutParams params = list_candidatos.getLayoutParams();
+                int old_height = params.height;
+                params.height = totalHeight + (list_candidatos.getDividerHeight() * (adapter.getCount() - 1));
+                list_candidatos.setLayoutParams(params);
+                list_candidatos.requestLayout();
+
+                ViewGroup.LayoutParams params_back = background.getLayoutParams();
+                params_back.height += (params.height - old_height);
+                background.setLayoutParams(params_back);
+                background.requestLayout();
+            }
+        });
+
+        bt_salvar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
             }
         });
     }
 
+    //IMAGEM ////////////////////////
     @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if(resultCode == Activity.RESULT_OK && requestCode == GALLERY_REQ_CODE){
-
-            img_galeria.setImageURI(data.getData());
+        if(resultCode == Activity.RESULT_OK && requestCode == 100 && data != null){
+            Uri imageUri = data.getData();
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
+                imageView.setImageBitmap(bitmap);
+                uploadBitmap(bitmap);
+            } catch (IOException e){
+                e.printStackTrace();
+            }
+            /*image = data.getData();
+            img_galeria.setImageURI(data.getData());*/
         }
     }
+
+    public byte[] getFileDataFromDrawable(Bitmap bitmap){
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 80, byteArrayOutputStream);
+        return byteArrayOutputStream.toByteArray();
+    }
+
+    private void uploadBitmap(final Bitmap bitmap){
+        img_tag = "ImagemTeste";
+
+        VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, EndPoints.UPLOAD_URL,
+                new Response.Listener<NetworkResponse>() {
+                    @Override
+                    public void onResponse(NetworkResponse response) {
+                        try {
+                            JSONObject obj = new JSONObject(new String(response.data));
+                            Toast.makeText(getActivity().getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getActivity().getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError{
+                Map<String, String> params = new HashMap<>();
+                params.put("tags", img_tag);
+                params.put("id_user", "1");
+                params.put("id_secao", "1");
+                return params;
+            }
+
+            @Override
+            protected Map<String, DataPart> getByteData(){
+                Map<String, DataPart> params = new HashMap();
+                long imagename = System.currentTimeMillis();
+                params.put("pic", new DataPart(imagename + ".png", getFileDataFromDrawable(bitmap)));
+                return params;
+            }
+        };
+        Volley.newRequestQueue(requireActivity().getApplicationContext()).add(volleyMultipartRequest);
+    }
+
+    /////////////////////////////////
 
     private void setDropDowns(Spinner spinner, List<String> strings){
         ArrayAdapter<String> adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, strings);
@@ -172,7 +295,7 @@ public class AddVotosFragment extends Fragment{
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 switch (adapterView.getId()){
                     case R.id.sp_turno:
-                        id_turno = i+1;
+                        id_turno = i;
                         break;
                     case R.id.sp_estado:
                         if(i == 0){
@@ -187,7 +310,7 @@ public class AddVotosFragment extends Fragment{
                         }
                         break;
                     case R.id.sp_cidade:
-                        id_cidade = i;
+                        cidade = cidades.get(i);
                         break;
                 }
             }
@@ -273,16 +396,44 @@ public class AddVotosFragment extends Fragment{
         }
     }
 
+
+    private void SalvarDados(){
+        if(NetworkUtils.isConnected()){
+            String url = HOST + "/salvarVotos.php";
+
+
+
+            JSONObject data = new JSONObject();
+            try {
+                data.put("turno", id_turno);
+                data.put("estado", id_estado);
+                data.put("cidade", cidade);
+                data.put("zona", edit_zona.getText().toString());
+                data.put("secao", edit_secao.getText().toString());
+            } catch (JSONException e){
+                e.printStackTrace();
+            }
+        } else {
+            Toast.makeText(getActivity(), R.string.con_disable, Toast.LENGTH_LONG).show();
+        }
+    }
+
     private void IniciarComponentes(View v){
         sp_turno = (Spinner) v.findViewById(R.id.sp_turno);
         sp_estado = (Spinner) v.findViewById(R.id.sp_estado);
         sp_cidade = (Spinner) v.findViewById(R.id.sp_cidade);
+        edit_zona = v.findViewById(R.id.edit_zona);
+        edit_secao = v.findViewById(R.id.edit_secao);
 
         //sp_candidato = (Spinner) v.findViewById(R.id.sp_candidato);
         list_candidatos = (ListView) v.findViewById(R.id.list_candidato);
         bt_add_voto = v.findViewById(R.id.bt_add_voto);
 
-        img_galeria = v.findViewById(R.id.img_galeria);
+        imageView = v.findViewById(R.id.img_galeria);
         bt_add_imagem = v.findViewById(R.id.bt_add_imagem);
+
+        background = v.findViewById(R.id.containerForm);
+
+        bt_salvar = v.findViewById(R.id.bt_salvar);
     }
 }

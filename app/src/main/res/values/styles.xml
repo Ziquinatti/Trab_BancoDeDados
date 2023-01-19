@@ -62,8 +62,8 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:background">@drawable/edit_text_right</item>
-        <item name="android:padding">12dp</item>
         <item name="android:maxLength">25</item>
+        <item name="paddingStart">15dp</item>
     </style>
 
     <style name="Spinner">
