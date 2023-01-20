@@ -19,7 +19,9 @@
     <EditText
         android:id="@+id/edit_votos"
         style="@style/Edit_Text_Right"
-        android:hint="   Nº Votos"
+        android:inputType="number"
+        android:paddingStart="10dp"
+        android:hint="Nº Votos"
         android:layout_weight="1.3"
         />
 

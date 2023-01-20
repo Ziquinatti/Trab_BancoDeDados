@@ -36,6 +36,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.blankj.utilcode.util.NetworkUtils;
@@ -46,6 +47,7 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,8 +63,7 @@ public class AddVotosFragment extends Fragment{
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    private String mParam1;
-    private String mParam2;
+    private String id_user;
 
     private List<String> turno, estados, cidades;
     private List<String> candidatos, mData;
@@ -76,12 +77,14 @@ public class AddVotosFragment extends Fragment{
     private EditText edit_zona, edit_secao;
 
     //Dados
-    private int id_turno, id_estado = 0;
-    private String cidade;
+    private int id_turno = 0, id_estado = 0;
+    private String cidade, zona, secao;
+    private ArrayList<ArrayList<String>> addCandidatos;
 
     //Imagem
     private ImageView imageView;
     private String img_tag;
+    private Bitmap bitmap;
 
     //private String HOST = "http://192.168.42.54/trab_final";
     private String HOST = "https://votosbrasil.000webhostapp.com/trab_final";
@@ -111,8 +114,7 @@ public class AddVotosFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            id_user = Integer.toString(getArguments().getInt("id"));
         }
     }
 
@@ -130,31 +132,44 @@ public class AddVotosFragment extends Fragment{
 
         IniciarComponentes(view);
 
+        //SELCIONAR TURNO
         turno = new ArrayList<String>();
         turno.add("1º Turno");
         turno.add("2º Turno");
         setDropDowns(sp_turno, turno);
 
+        //SELECIONAR ESTADO
         estados = new ArrayList<String>();
-        estados.add("Estados");
+        estados.add("Carregando...");
         getEstados();
         setDropDowns(sp_estado, estados);
 
+        //SELECIONAR CIDADE
         cidades = new ArrayList<String>();
-        cidades.add("Selecione um estado");
+        cidades.add("Selecione um estado primeiro");
         setDropDowns(sp_cidade, cidades);
 
         //LISTA DE CANDIDADOS E VOTOS
+        addCandidatos = new ArrayList<ArrayList<String>>();
+        addCandidatos.add(new ArrayList<String>(){{
+            add(" - ");
+            add(" - ");
+        }});
         mData = new ArrayList<String>();
-        mData.add("Candidato1");
+        mData.add("Candidato");
 
         candidatos = new ArrayList<String>();
-        candidatos.add("Bob");
-        candidatos.add("Rose");
-        candidatos.add("TestBot");
-        candidatos.add("Jorge");
+        candidatos.add("Carregando...");
+        getCandidatos();
 
-        adapter = new ListviewAdapter((ArrayList<String>) mData, (ArrayList<String>)candidatos, getActivity());
+        adapter = new ListviewAdapter((ArrayList<String>) mData, (ArrayList<String>) candidatos, getActivity(), new OnSpinnerItemSelected() {
+            @Override
+            public void onItemSelected(int position, String selectedItem, String num_votos) {
+                addCandidatos.get(position).set(0, selectedItem);
+                addCandidatos.get(position).set(1, num_votos);
+                System.out.println(addCandidatos);
+            }
+        });
         list_candidatos.setAdapter(adapter);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat.checkSelfPermission(getActivity(),
@@ -172,9 +187,6 @@ public class AddVotosFragment extends Fragment{
             public void onClick(View v) {
                 Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(i, 100);
-                /*Intent iGaleria = new Intent(Intent.ACTION_PICK);
-                iGaleria.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(iGaleria, GALLERY_REQ_CODE);*/
             }
         });
 
@@ -188,7 +200,11 @@ public class AddVotosFragment extends Fragment{
         bt_add_voto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mData.add("Candidato2");
+                addCandidatos.add(new ArrayList<String>(){{
+                    add(" - ");
+                    add(" - ");
+                }});
+                mData.add("Candidato");
                 adapter.notifyDataSetChanged();
 
                 int totalHeight = 0;
@@ -214,7 +230,7 @@ public class AddVotosFragment extends Fragment{
         bt_salvar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                SalvarDados();
             }
         });
     }
@@ -226,14 +242,11 @@ public class AddVotosFragment extends Fragment{
         if(resultCode == Activity.RESULT_OK && requestCode == 100 && data != null){
             Uri imageUri = data.getData();
             try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
+                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
                 imageView.setImageBitmap(bitmap);
-                uploadBitmap(bitmap);
             } catch (IOException e){
                 e.printStackTrace();
             }
-            /*image = data.getData();
-            img_galeria.setImageURI(data.getData());*/
         }
     }
 
@@ -251,9 +264,11 @@ public class AddVotosFragment extends Fragment{
                     @Override
                     public void onResponse(NetworkResponse response) {
                         try {
-                            JSONObject obj = new JSONObject(new String(response.data));
+                            JSONObject obj = new JSONObject(new String(response.data, HttpHeaderParser.parseCharset(response.headers)));
                             Toast.makeText(getActivity().getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
                         } catch (JSONException e) {
+                            e.printStackTrace();
+                        } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
                     }
@@ -268,8 +283,8 @@ public class AddVotosFragment extends Fragment{
             protected Map<String, String> getParams() throws AuthFailureError{
                 Map<String, String> params = new HashMap<>();
                 params.put("tags", img_tag);
-                params.put("id_user", "1");
-                params.put("id_secao", "1");
+                params.put("id_user", id_user);
+                params.put("id_secao", secao);
                 return params;
             }
 
@@ -300,7 +315,7 @@ public class AddVotosFragment extends Fragment{
                     case R.id.sp_estado:
                         if(i == 0){
                             cidades.clear();
-                            cidades.add("Selecione um estado");
+                            cidades.add("Selecione um estado primeiro");
                             setDropDowns(sp_cidade, cidades);
                         }
                         else if(id_estado != i) {
@@ -331,6 +346,8 @@ public class AddVotosFragment extends Fragment{
                 public void onResponse(JSONObject response) {
                     try {
                         if(response.getString("BUSCA").equals("OK")){
+                            estados.clear();
+                            estados.add("Estados");
                             JSONArray lista = response.getJSONArray("ESTADOS");
                             for (int i=0; i<lista.length(); i++){
                                 estados.add(lista.getString(i));
@@ -396,26 +413,122 @@ public class AddVotosFragment extends Fragment{
         }
     }
 
+    private void getCandidatos(){
+        if(NetworkUtils.isConnected()){
+            String url = HOST + "/buscaCandidatos.php";
 
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        if(response.getString("BUSCA").equals("OK")){
+                            candidatos.clear();
+                            JSONArray lista = response.getJSONArray("CANDIDATOS");
+                            for (int i=0; i<lista.length(); i++){
+                                candidatos.add(lista.getString(i));
+                            }
+                        } else {
+                            Toast.makeText(getActivity(), "Busca dos Candidatos Falhou", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(getActivity(), error.toString().trim(), Toast.LENGTH_SHORT).show();
+                }
+            });
+            RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
+            requestQueue.add(jsonObjectRequest);
+        } else {
+            Toast.makeText(getActivity(), R.string.con_disable, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    //SALVAR VOTOS //////////////////
     private void SalvarDados(){
         if(NetworkUtils.isConnected()){
-            String url = HOST + "/salvarVotos.php";
+            if(ValidarDados()){
+                String url = HOST + "/salvarVotos.php";
 
+                JSONArray array = new JSONArray();
+                for(int i=0; i<addCandidatos.size(); i++){
+                    JSONArray tmp = new JSONArray();
+                    tmp.put(addCandidatos.get(i).get(0));
+                    tmp.put(addCandidatos.get(i).get(1));
+                    array.put(tmp);
+                }
 
+                JSONObject data = new JSONObject();
+                try {
+                    data.put("turno", id_turno);
+                    data.put("estado", id_estado);
+                    data.put("cidade", cidade);
+                    data.put("zona", zona);
+                    data.put("secao", secao);
+                    data.put("candidatos", array);
+                    data.put("user", id_user);
+                } catch (JSONException e){
+                    e.printStackTrace();
+                }
 
-            JSONObject data = new JSONObject();
-            try {
-                data.put("turno", id_turno);
-                data.put("estado", id_estado);
-                data.put("cidade", cidade);
-                data.put("zona", edit_zona.getText().toString());
-                data.put("secao", edit_secao.getText().toString());
-            } catch (JSONException e){
-                e.printStackTrace();
+                System.out.println(data);
+
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            if(response.getString("CADVOTOS").equals("OK")){
+                                Toast.makeText(getActivity(), "Votos cadastrados com sucesso", Toast.LENGTH_SHORT).show();
+                            } else {
+                                System.out.println(response.getString("ERRO"));
+                                Toast.makeText(getActivity(), "Erro no cadastro dos votos", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getActivity(), error.toString().trim(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+                RequestQueue requestQueue = Volley.newRequestQueue(requireActivity().getApplicationContext());
+                requestQueue.add(jsonObjectRequest);
+
+                //UPLOAD IMAGE
+                uploadBitmap(bitmap);
             }
         } else {
             Toast.makeText(getActivity(), R.string.con_disable, Toast.LENGTH_LONG).show();
         }
+    }
+
+    private boolean ValidarDados(){
+        edit_secao.setError(null);
+        edit_zona.setError(null);
+
+        secao = edit_secao.getText().toString().trim();
+        zona = edit_zona.getText().toString().trim();
+
+        boolean ok = true;
+
+        if(secao.isEmpty()){
+            edit_secao.setError(getString(R.string.empty_field));
+            edit_secao.requestFocus();
+            ok = false;
+        }
+
+        if(zona.isEmpty()){
+            edit_zona.setError(getString(R.string.empty_field));
+            edit_zona.requestFocus();
+            ok = false;
+        }
+
+        return ok;
     }
 
     private void IniciarComponentes(View v){

@@ -6,6 +6,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
@@ -19,12 +20,14 @@ public class ListviewAdapter extends BaseAdapter {
 
     private ArrayList<String> mSpinnerItems, mData;
     private Context mContext;
+    private OnSpinnerItemSelected onSpinnerItemSelected;
 
     LayoutInflater mInflater;
-    public ListviewAdapter(ArrayList<String> data, ArrayList<String> spinnerItem, Context context){
+    public ListviewAdapter(ArrayList<String> data, ArrayList<String> spinnerItem, Context context, OnSpinnerItemSelected onSpinnerItemSelected){
         mData = data;
         mSpinnerItems = spinnerItem;
         mContext = context;
+        this.onSpinnerItemSelected = onSpinnerItemSelected;
     }
 
     @Override
@@ -54,9 +57,26 @@ public class ListviewAdapter extends BaseAdapter {
         }
 
         Spinner spinner = (Spinner) view.findViewById(R.id.sp_candidato);
+        EditText edit_numVotos = view.findViewById(R.id.edit_votos);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, mSpinnerItems);
         spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String votos = edit_numVotos.getText().toString().trim();
+                if(votos.isEmpty()){
+                    votos = "0";
+                };
+                onSpinnerItemSelected.onItemSelected(position, (String) adapterView.getAdapter().getItem(i), votos);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
         return view;
     }
 
