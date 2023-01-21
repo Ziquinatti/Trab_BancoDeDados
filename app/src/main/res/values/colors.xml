@@ -11,5 +11,9 @@
     <color name="dark_gray">#666666</color>
     <color name="blue">#4facfe</color>
     <color name="dark_blue">#2896F8</color>
+    <color name="light_blue">#80BCF1</color>
+    <color name="light_light_blue">#BFDEFA</color>
+    <color name="orange">#F85925</color>
+    <color name="light_orange">#FF7247</color>
     <color name="transparente">#00000000</color>
 </resources>
