@@ -125,8 +125,8 @@
             app:layout_constraintTop_toBottomOf="@id/text_candidato"
             />
 
-        <ImageView
-            android:id="@+id/img_boletim"
+        <com.android.volley.toolbox.NetworkImageView
+            android:id="@+id/imagem"
             android:layout_width="300dp"
             android:layout_height="300dp"
             android:scaleType="fitXY"
@@ -146,7 +146,7 @@
             android:background="@drawable/button_confirm"
             app:srcCompat="@drawable/ic_check"
             app:layout_constraintStart_toStartOf="@id/containerDadosVotos"
-            app:layout_constraintTop_toBottomOf="@id/img_boletim"/>
+            app:layout_constraintTop_toBottomOf="@id/imagem"/>
 
         <ImageView
             android:id="@+id/bt_negar"
@@ -157,7 +157,7 @@
             android:background="@drawable/button_trash"
             app:srcCompat="@drawable/ic_delete"
             app:layout_constraintEnd_toEndOf="@id/containerDadosVotos"
-            app:layout_constraintTop_toBottomOf="@id/img_boletim"/>
+            app:layout_constraintTop_toBottomOf="@id/imagem"/>
         <View
             android:layout_width="match_parent"
             android:layout_height="20dp"

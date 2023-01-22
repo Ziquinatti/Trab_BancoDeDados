@@ -63,7 +63,9 @@
     <Spinner
         android:id="@+id/sp_estado"
         style="@style/Spinner"
-        android:layout_width="332dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
+        android:layout_width="match_parent"
         android:layout_height="60dp"
         app:layout_constraintEnd_toEndOf="@id/containerComponents"
         app:layout_constraintStart_toStartOf="@id/containerComponents"

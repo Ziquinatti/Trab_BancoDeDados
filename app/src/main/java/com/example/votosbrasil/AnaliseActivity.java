@@ -91,6 +91,7 @@ public class AnaliseActivity extends AppCompatActivity {
                                 String item = "User: "+nome+" | Ano: "+ano+" | "+(turno+1)+"º Turno";
                                 adapter.add(item);
                             }
+                            System.out.println(idTmpVotos);
                             ajustaLista();
                         } else {
                             Toast.makeText(AnaliseActivity.this, "Busca dos Estados Falhou", Toast.LENGTH_SHORT).show();
@@ -144,6 +145,7 @@ public class AnaliseActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(AnaliseActivity.this, CheckVotosActivity.class);
+                System.out.println(idTmpVotos.get(i));
                 intent.putExtra("idTmp_Votos", idTmpVotos.get(i));
                 startActivity(intent);
                 //System.out.println(idTmpVotos.get(i));

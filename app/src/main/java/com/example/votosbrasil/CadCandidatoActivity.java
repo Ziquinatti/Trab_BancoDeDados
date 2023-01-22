@@ -42,7 +42,7 @@ public class CadCandidatoActivity extends AppCompatActivity {
     private String candidato;
 
     private List<String> cargos, partidos;
-    private int idCargo, idPartido;
+    private int idCargo = 1, idPartido = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +64,6 @@ public class CadCandidatoActivity extends AppCompatActivity {
         partidos = new ArrayList<String>();
         cargos = new ArrayList<String>();
         getCargo_Partido();
-        setDropDowns(sp_partido, partidos);
-        setDropDowns(sp_cargo, cargos);
 
         bt_salvar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,10 +89,10 @@ public class CadCandidatoActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 switch (adapterView.getId()){
                     case R.id.sp_partido:
-                        idPartido = i;
+                        idPartido = i+1;
                         break;
                     case R.id.sp_cargo:
-                        idCargo = i;
+                        idCargo = i+1;
                         break;
                 }
             }
@@ -118,7 +116,7 @@ public class CadCandidatoActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
+                System.out.println(data);
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -155,7 +153,7 @@ public class CadCandidatoActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(JSONObject response) {
                     try {
-                        if(response.getString("BUSCA").equals("OK")){
+                        if(response.getString("BUSCA_P").equals("OK") && response.getString("BUSCA_C").equals("OK")){
                             JSONArray lista = response.getJSONArray("CARGOS");
                             for (int i=0; i<lista.length(); i++){
                                 cargos.add(lista.getString(i));
@@ -164,6 +162,8 @@ public class CadCandidatoActivity extends AppCompatActivity {
                             for (int i=0; i<lista.length(); i++){
                                 partidos.add(lista.getString(i));
                             }
+                            setDropDowns(sp_partido, partidos);
+                            setDropDowns(sp_cargo, cargos);
                         } else {
                             Toast.makeText(CadCandidatoActivity.this, "Busca dos Partidos e Cargos Falhou", Toast.LENGTH_SHORT).show();
                         }

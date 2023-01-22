@@ -284,7 +284,11 @@ public class AddVotosFragment extends Fragment{
                 Map<String, String> params = new HashMap<>();
                 params.put("tags", img_tag);
                 params.put("id_user", id_user);
-                params.put("id_secao", secao);
+                params.put("estado", Integer.toString(id_estado));
+                params.put("cidade", cidade);
+                params.put("zona", zona);
+                params.put("secao", secao);
+                System.out.println(params);
                 return params;
             }
 

@@ -42,7 +42,7 @@ public class CadMunicipioActivity extends AppCompatActivity {
     private String municipio;
 
     private List<String> estados;
-    private int idEstado;
+    private int idEstado = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +63,6 @@ public class CadMunicipioActivity extends AppCompatActivity {
 
         estados = new ArrayList<String>();
         getEstados();
-        setDropDowns(sp_estado, estados);
 
         bt_salvar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,7 +91,7 @@ public class CadMunicipioActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
+                System.out.println(data);
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -128,7 +127,7 @@ public class CadMunicipioActivity extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                idEstado = i;
+                idEstado = i+1;
             }
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
@@ -146,12 +145,11 @@ public class CadMunicipioActivity extends AppCompatActivity {
                 public void onResponse(JSONObject response) {
                     try {
                         if(response.getString("BUSCA").equals("OK")){
-                            estados.clear();
-                            estados.add("Todos");
                             JSONArray lista = response.getJSONArray("ESTADOS");
                             for (int i=0; i<lista.length(); i++){
                                 estados.add(lista.getString(i));
                             }
+                            setDropDowns(sp_estado, estados);
                         } else {
                             Toast.makeText(CadMunicipioActivity.this, "Busca dos Estados Falhou", Toast.LENGTH_SHORT).show();
                         }

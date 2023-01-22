@@ -110,7 +110,7 @@ public class FormLogin extends AppCompatActivity {
                             if(response.getString("LOGIN").equals("OK")){
                                 user.id = response.getInt("ID");
                                 user.nome = response.getString("NOME");
-                                if(user.id == 0){
+                                if(user.id == 1){
                                     //ADMIN
                                     mHandler.postDelayed(new Runnable() {
                                         @Override

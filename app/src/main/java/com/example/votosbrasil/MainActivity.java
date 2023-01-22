@@ -84,12 +84,12 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(app_bar);
 
         user = new Usuario();
-        //user = (Usuario) getIntent().getSerializableExtra("user");
-        user.id = 1;
-        user.nome = "TestBot";
-        //System.out.println("ID: " + user.id);
-        //System.out.println("NOME: " + user.nome);
-        //System.out.println("EMAIL: " + user.email);
-        //System.out.println("SENHA: " + user.senha);
+        user = (Usuario) getIntent().getSerializableExtra("user");
+        //user.id = 1;
+        //user.nome = "TestBot";
+        System.out.println("ID: " + user.id);
+        System.out.println("NOME: " + user.nome);
+        System.out.println("EMAIL: " + user.email);
+        System.out.println("SENHA: " + user.senha);
     }
 }
