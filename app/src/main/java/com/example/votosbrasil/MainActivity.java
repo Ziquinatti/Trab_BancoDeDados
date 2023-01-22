@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 
@@ -41,6 +42,15 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         });
+
+        binding.mainAppBar.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()){
+                case R.id.bt_exit:
+                    sair();
+                    break;
+            }
+            return true;
+        });
     }
 
     @Override
@@ -60,6 +70,13 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout, fragment);
         fragmentTransaction.commit();
+    }
+
+    private void sair(){
+        user = null;
+        Intent intent = new Intent(MainActivity.this, FormLogin.class);
+        finish();
+        startActivity(intent);
     }
 
     private void iniciarComponentes(){

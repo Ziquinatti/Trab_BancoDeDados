@@ -18,6 +18,24 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.VotosBrasil"
         tools:targetApi="31">
+        <activity
+            android:name=".CheckVotosActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AnaliseActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CadMunicipioActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CadCandidatoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CadPartidoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminActivity"
+            android:exported="false" />
         <activity android:name=".MainActivity" />
         <activity
             android:name=".FormCadastro"

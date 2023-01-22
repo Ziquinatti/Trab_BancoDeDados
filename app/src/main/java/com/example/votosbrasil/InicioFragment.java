@@ -9,9 +9,19 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.blankj.utilcode.util.NetworkUtils;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -20,7 +30,12 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,10 +50,12 @@ public class InicioFragment extends Fragment {
     private int id;
     private String nome;
 
+    private String HOST = "https://votosbrasil.000webhostapp.com/trab_final";
     private TextView text_hello_user;
-    private BarChart barChart1, barChart2;
+    private BarChart grafico1, grafico2;
+    private List<String> labels1, labels2;
 
-    private ArrayList barArrayList;
+    private ArrayList barArrayList1, barArrayList2;
 
     public InicioFragment() {
         // Required empty public constructor
@@ -85,12 +102,11 @@ public class InicioFragment extends Fragment {
         String hello = "Olá, " + nome;
         text_hello_user.setText(hello);
 
-        gerarGraficos(barChart1);
-        gerarGraficos(barChart2);
+        buscarVotos(0, labels1, barArrayList1, grafico1);
+        buscarVotos(1, labels2, barArrayList2, grafico2);
     }
 
-    private void gerarGraficos(BarChart barChart){
-        getData();
+    private void gerarGraficos(BarChart barChart, ArrayList barArrayList, List<String> labels){
         BarDataSet barDataSet = new BarDataSet(barArrayList, "Teste Gráfico");
         BarData barData = new BarData(barDataSet);
         barChart.setData(barData);
@@ -103,27 +119,77 @@ public class InicioFragment extends Fragment {
         barChart.getLegend().setEnabled(false);
         barChart.getAxisRight().setEnabled(false);
 
-        final String[] labels = new String[]{"Bob", "Rose", "TestBot", "Roger", "Talita"};
         XAxis xAxis = barChart.getXAxis();
         xAxis.setTextSize(12f);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
         xAxis.setGranularity(1f);
         xAxis.setGranularityEnabled(true);
+        barChart.requestLayout();
     }
 
-    private void getData(){
-        barArrayList = new ArrayList();
-        barArrayList.add(new BarEntry(0f, 10));
-        barArrayList.add(new BarEntry(1f, 20));
-        barArrayList.add(new BarEntry(2f, 30));
-        barArrayList.add(new BarEntry(3f, 40));
-        barArrayList.add(new BarEntry(4f, 50));
+    private void buscarVotos(int turno, List<String> labels, ArrayList barArrayList, BarChart grafico){
+        if(NetworkUtils.isConnected()){
+            String url = HOST + "/buscaVotos.php";
+
+            JSONObject data = new JSONObject();
+            try {
+                data.put("turno", turno);
+                data.put("estado", 0);
+                data.put("cidade", "Todos municípios");
+                data.put("zona", "Todas zonas");
+                data.put("secao", "Todas secoes");
+            } catch (JSONException e){
+                e.printStackTrace();
+            }
+            System.out.println(data);
+
+            if(grafico.getData() != null){
+                grafico.getData().clearValues();
+            }
+
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    System.out.println(response);
+                    try {
+                        if(response.getString("BUSCA").equals("OK")){
+                            JSONArray lista = response.getJSONArray("VOTOS");
+                            for (int i=0; i<lista.length(); i++){
+                                //System.out.println(lista.getJSONArray(0).get(0));
+                                //System.out.println(lista.getJSONArray(0).get(1));
+                                labels.add(lista.getJSONArray(i).get(0).toString());
+                                barArrayList.add(new BarEntry(i, (float) lista.getJSONArray(i).getInt(1)));
+                            }
+                            gerarGraficos(grafico, barArrayList, labels);
+                        } else {
+                            Toast.makeText(getActivity(), "Busca dos Votos falhou", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(getActivity(), error.toString().trim(), Toast.LENGTH_SHORT).show();
+                }
+            });
+            RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
+            requestQueue.add(jsonObjectRequest);
+        } else {
+            Toast.makeText(getActivity(), R.string.con_disable, Toast.LENGTH_LONG).show();
+        }
     }
 
     private void IniciarComponentes(View v){
-        barChart1 = (BarChart) v.findViewById(R.id.barchart1);
-        barChart2 = (BarChart) v.findViewById(R.id.barchart2);
+        grafico1 = (BarChart) v.findViewById(R.id.barchart1);
+        grafico2 = (BarChart) v.findViewById(R.id.barchart2);
         text_hello_user = v.findViewById(R.id.hello_user);
+
+        barArrayList1 = new ArrayList();
+        barArrayList2 = new ArrayList();
+        labels1 = new ArrayList<String>();
+        labels2 = new ArrayList<String>();
     }
 }

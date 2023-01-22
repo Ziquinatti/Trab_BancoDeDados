@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_background"
+    tools:context=".AdminActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        >
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/main_adm_app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/white"
+            app:menu="@menu/main_app_bar"
+            app:title="@string/app_name"
+            app:titleTextAppearance="@style/TextAppBar"
+            app:titleTextColor="@color/blue"
+            />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <View
+        android:id="@+id/containerComponents"
+        style="@style/ContainerComponents"
+        android:layout_height="370dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_bar_layout" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/bt_cad_partido"
+        style="@style/Button"
+        android:text="NOVO PARTIDO"
+        app:layout_constraintEnd_toEndOf="@id/containerComponents"
+        app:layout_constraintStart_toStartOf="@id/containerComponents"
+        app:layout_constraintTop_toTopOf="@id/containerComponents" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/bt_cad_candidato"
+        style="@style/Button"
+        android:text="NOVO CANDIDATO"
+        app:layout_constraintEnd_toEndOf="@id/containerComponents"
+        app:layout_constraintStart_toStartOf="@id/containerComponents"
+        app:layout_constraintTop_toBottomOf="@id/bt_cad_partido" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/bt_cad_cidade"
+        style="@style/Button"
+        android:text="NOVO MUNICÍPIO"
+        app:layout_constraintEnd_toEndOf="@id/containerComponents"
+        app:layout_constraintStart_toStartOf="@id/containerComponents"
+        app:layout_constraintTop_toBottomOf="@id/bt_cad_candidato" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/bt_analisar"
+        style="@style/Button"
+        android:text="ANALISAR VOTOS CADASTRADOS"
+        app:layout_constraintEnd_toEndOf="@id/containerComponents"
+        app:layout_constraintStart_toStartOf="@id/containerComponents"
+        app:layout_constraintTop_toBottomOf="@id/bt_cad_cidade" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

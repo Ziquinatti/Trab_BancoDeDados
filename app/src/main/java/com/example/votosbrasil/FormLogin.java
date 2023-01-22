@@ -38,7 +38,7 @@ public class FormLogin extends AppCompatActivity {
     private EditText edit_email, edit_senha;
     private Button bt_entrar;
     private ProgressBar pb_entrando;
-    private TextView text_tela_cadastro, text_skip_menu;
+    private TextView text_tela_cadastro, text_skip_menu, text_skipAdm;
     private Handler mHandler = new Handler();
 
     private Usuario user;
@@ -67,8 +67,17 @@ public class FormLogin extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(FormLogin.this, MainActivity.class);
-                startActivity(intent);
                 finish();
+                startActivity(intent);
+            }
+        });
+
+        text_skipAdm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(FormLogin.this, AdminActivity.class);
+                finish();
+                startActivity(intent);
             }
         });
 
@@ -101,16 +110,29 @@ public class FormLogin extends AppCompatActivity {
                             if(response.getString("LOGIN").equals("OK")){
                                 user.id = response.getInt("ID");
                                 user.nome = response.getString("NOME");
-
-                                mHandler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Intent intent = new Intent(FormLogin.this, MainActivity.class);
-                                        intent.putExtra("user", user);
-                                        startActivity(intent);
-                                        finish();
-                                    }
-                                }, 3000);
+                                if(user.id == 0){
+                                    //ADMIN
+                                    mHandler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Intent intent = new Intent(FormLogin.this, AdminActivity.class);
+                                            intent.putExtra("user", user);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+                                    }, 3000);
+                                } else {
+                                    //USUÁRIO PADRÃO
+                                    mHandler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Intent intent = new Intent(FormLogin.this, MainActivity.class);
+                                            intent.putExtra("user", user);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+                                    }, 3000);
+                                }
                             } else {
                                 Toast.makeText(FormLogin.this, R.string.user_not_find, Toast.LENGTH_SHORT).show();
                                 pb_entrando.setVisibility(View.INVISIBLE);
@@ -167,5 +189,6 @@ public class FormLogin extends AppCompatActivity {
         text_tela_cadastro = findViewById(R.id.text_tela_cadastro);
 
         text_skip_menu = findViewById(R.id.text_skip);
+        text_skipAdm = findViewById(R.id.text_skipAdm);
     }
 }

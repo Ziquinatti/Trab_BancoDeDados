@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/gradient_background"
+    tools:context=".CheckVotosActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            >
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/main_check_app_bar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/white"
+                app:menu="@menu/main_app_bar"
+                app:title="@string/app_name"
+                app:titleTextAppearance="@style/TextAppBar"
+                app:titleTextColor="@color/blue"
+                />
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <View
+            android:id="@+id/containerTop"
+            style="@style/TopContainerComponents"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_height="50dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/app_bar_layout" />
+
+        <TextView
+            android:id="@+id/title_check_votos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Votos Inseridos"
+            android:textColor="@color/black"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            app:layout_constraintStart_toStartOf="@id/containerTop"
+            app:layout_constraintTop_toTopOf="@id/containerTop"
+            app:layout_constraintEnd_toEndOf="@id/containerTop"
+            />
+        <View
+            android:id="@+id/containerDadosVotos"
+            style="@style/ContainerComponents2"
+            android:layout_height="810dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/containerTop"
+            />
+        <TextView
+            android:id="@+id/text_user"
+            style="@style/TextVotos"
+            android:text="Usuário:"
+            app:layout_constraintStart_toStartOf="@id/containerDadosVotos"
+            app:layout_constraintTop_toTopOf="@id/containerDadosVotos"
+            />
+        <TextView
+            android:id="@+id/text_ano_turno"
+            style="@style/TextVotos"
+            android:text="Ano: xxxx - Xº turno"
+            app:layout_constraintStart_toStartOf="@id/containerDadosVotos"
+            app:layout_constraintTop_toBottomOf="@id/text_user"
+            />
+        <TextView
+            android:id="@+id/text_estado"
+            style="@style/TextVotos"
+            android:text="Estado:"
+            app:layout_constraintStart_toStartOf="@id/containerDadosVotos"
+            app:layout_constraintTop_toBottomOf="@id/text_ano_turno"
+            />
+        <TextView
+            android:id="@+id/text_municipio"
+            style="@style/TextVotos"
+            android:text="Município:"
+            app:layout_constraintStart_toStartOf="@id/containerDadosVotos"
+            app:layout_constraintTop_toBottomOf="@id/text_estado"
+            />
+        <TextView
+            android:id="@+id/text_zona"
+            style="@style/TextVotos"
+            android:text="Zona:"
+            app:layout_constraintStart_toStartOf="@id/containerDadosVotos"
+            app:layout_constraintTop_toBottomOf="@id/text_municipio"
+            />
+        <TextView
+            android:id="@+id/text_secao"
+            style="@style/TextVotos"
+            android:text="Seção:"
+            app:layout_constraintStart_toStartOf="@id/containerDadosVotos"
+            app:layout_constraintTop_toBottomOf="@id/text_zona"
+            />
+
+        <TextView
+            android:id="@+id/text_candidato"
+            style="@style/TextVotos"
+            android:text="Candidato:"
+            app:layout_constraintStart_toStartOf="@id/containerDadosVotos"
+            app:layout_constraintTop_toBottomOf="@id/text_secao"
+            />
+
+        <TextView
+            android:id="@+id/text_qtd_votos"
+            style="@style/TextVotos"
+            android:text="Nº de votos:"
+            app:layout_constraintStart_toStartOf="@id/containerDadosVotos"
+            app:layout_constraintTop_toBottomOf="@id/text_candidato"
+            />
+
+        <ImageView
+            android:id="@+id/img_boletim"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:scaleType="fitXY"
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toStartOf="@id/containerDadosVotos"
+            app:layout_constraintEnd_toEndOf="@id/containerDadosVotos"
+            app:layout_constraintTop_toBottomOf="@id/text_qtd_votos"
+            android:background="@drawable/image_field"
+            />
+
+        <ImageView
+            android:id="@+id/bt_aceitar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="50dp"
+            android:background="@drawable/button_confirm"
+            app:srcCompat="@drawable/ic_check"
+            app:layout_constraintStart_toStartOf="@id/containerDadosVotos"
+            app:layout_constraintTop_toBottomOf="@id/img_boletim"/>
+
+        <ImageView
+            android:id="@+id/bt_negar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="50dp"
+            android:background="@drawable/button_trash"
+            app:srcCompat="@drawable/ic_delete"
+            app:layout_constraintEnd_toEndOf="@id/containerDadosVotos"
+            app:layout_constraintTop_toBottomOf="@id/img_boletim"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/containerDadosVotos"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

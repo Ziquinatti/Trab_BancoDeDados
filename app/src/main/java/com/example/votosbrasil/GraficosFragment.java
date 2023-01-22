@@ -355,10 +355,15 @@ public class GraficosFragment extends Fragment {
             }
             //System.out.println(data);
 
+            if(!labels.isEmpty()){
+                labels.clear();
+                barArrayList.clear();
+            }
+
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-                    System.out.println(response);
+                    //System.out.println(response);
                     try {
                         if(response.getString("BUSCA").equals("OK")){
                             JSONArray lista = response.getJSONArray("VOTOS");

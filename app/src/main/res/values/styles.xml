@@ -40,7 +40,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@drawable/edit_text</item>
         <item name="android:padding">20dp</item>
-        <item name="android:maxLength">25</item>
+        <item name="android:maxLength">255</item>
         <item name="android:layout_marginLeft">40dp</item>
         <item name="android:layout_marginRight">40dp</item>
         <item name="android:layout_marginTop">15dp</item>
@@ -116,6 +116,16 @@
     <style name="TextAppBar">
         <item name="android:textSize">26sp</item>
         <item name="android:textAllCaps">true</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextVotos">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">15dp</item>
+        <item name="android:layout_marginStart">15dp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">21sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
