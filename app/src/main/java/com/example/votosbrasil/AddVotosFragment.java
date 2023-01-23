@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.view.LayoutInflater;
@@ -82,6 +83,7 @@ public class AddVotosFragment extends Fragment{
     private ArrayList<ArrayList<String>> addCandidatos;
 
     //Imagem
+    private Handler mHandler = new Handler();
     private ImageView imageView;
     private String img_tag;
     private Bitmap bitmap;
@@ -504,7 +506,12 @@ public class AddVotosFragment extends Fragment{
                 requestQueue.add(jsonObjectRequest);
 
                 //UPLOAD IMAGE
-                uploadBitmap(bitmap);
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        uploadBitmap(bitmap);
+                    }
+                }, 5000);
             }
         } else {
             Toast.makeText(getActivity(), R.string.con_disable, Toast.LENGTH_LONG).show();
